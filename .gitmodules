@@ -1,0 +1,3 @@
+[submodule "app/libs/taglib"]
+	path = app/libs/taglib
+	url = https://github.com/arjunphull/taglib.git

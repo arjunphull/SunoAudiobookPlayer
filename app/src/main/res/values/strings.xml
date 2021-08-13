@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">SunoAudiobookPlayer</string>
+    <string name="library">Library</string>
+    <string name="speedDialAdd">add to library</string>
+    <string name="speedDialClear">clear library</string>
+    <string name="chooseDirectory">Choose directory</string>
+    <string name="unknown">unknown</string>
+    <string name="remove_from_library">remove from library</string>
+    <string name="about">About</string>
+    <string name="welcome">Welcome to SunoAudiobookPlayer!</string>
+    <string name="first_start_msg">By default, SunoAudiobookPlayer parses tag information of audio files to build it\'s library. If your files are untagged or insufficiently tagged, it will guess author, title, and track numbers based on directory structure. In this case, you must have your files organized with the following folder structure: AUTHOR/TITLE/{FILES}.</string>
+</resources>
