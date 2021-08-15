@@ -3,6 +3,7 @@ package com.github.arjunphull.sunoaudiobookplayer.ui;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
@@ -89,7 +90,9 @@ public class PlayerActivity extends AppCompatActivity implements OnPlaybackChang
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_player);
+
         mSeekBar = findViewById(R.id.seekBar);
         mPlayPauseBtn = findViewById(R.id.play_pause_button);
         mPositionTv = findViewById(R.id.tvPosition);
