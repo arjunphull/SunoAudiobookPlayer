@@ -41,12 +41,13 @@
     <ImageView
         android:id="@+id/playerCoverImageView"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         android:layout_marginTop="30dp"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvChapter"
+        app:layout_constraintBottom_toTopOf="@+id/skip_back_button"
         tools:ignore="ContentDescription" />
 
     <ImageButton
@@ -55,10 +56,11 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:onClick="onSkipBackButtonClick"
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerCoverImageView"
+        app:layout_constraintBottom_toTopOf="@+id/sbLayout"
         app:srcCompat="@drawable/ic_baseline_skip_previous_24"
         tools:ignore="ContentDescription" />
 
@@ -68,12 +70,13 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:onClick="onPlaybackSpeedButtonClick"
         android:text="1.0x"
         android:textAlignment="center"
         android:textStyle="bold"
         android:textColor="?attr/colorText"
-        app:layout_constraintTop_toBottomOf="@+id/playerCoverImageView"
+        app:layout_constraintBottom_toTopOf="@+id/sbLayout"
         app:layout_constraintLeft_toRightOf="@+id/skip_back_button"
         app:layout_constraintRight_toLeftOf="@+id/skip_fwd_button"
         tools:ignore="HardcodedText" />
@@ -84,10 +87,11 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:onClick="onSkipFwdButtonClick"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerCoverImageView"
+        app:layout_constraintBottom_toTopOf="@+id/sbLayout"
         app:srcCompat="@drawable/ic_baseline_skip_next_24"
         tools:ignore="ContentDescription" />
 
@@ -96,10 +100,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skip_back_button">
+        app:layout_constraintBottom_toTopOf="@+id/seek_long_back_button">
 
         <SeekBar
             android:id="@+id/seekBar"
@@ -138,7 +143,7 @@
         android:layout_height="wrap_content"
         android:onClick="onSeekLongBackButtonClick"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/space_skipBackBtn"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +154,7 @@
         android:id="@+id/space_skipBackBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/skip_back_button"
         app:layout_constraintRight_toLeftOf="@+id/seek_back_button" />
@@ -161,7 +166,7 @@
         android:layout_height="wrap_content"
         android:onClick="onSeekBackButtonClick"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/space_skipBackBtn"
         app:layout_constraintRight_toLeftOf="@+id/space_seekBackBtn"
@@ -172,7 +177,7 @@
         android:id="@+id/space_seekBackBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/seek_back_button"
         app:layout_constraintRight_toLeftOf="@+id/play_pause_button" />
@@ -184,7 +189,7 @@
         android:layout_height="wrap_content"
         android:onClick="onPlayPauseButtonClick"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/space_seekBackBtn"
         app:layout_constraintRight_toLeftOf="@+id/space_seekFwdBtn"
@@ -195,7 +200,7 @@
         android:id="@+id/space_seekFwdBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/play_pause_button"
         app:layout_constraintRight_toLeftOf="@+id/seek_fwd_button" />
@@ -207,7 +212,7 @@
         android:layout_height="wrap_content"
         android:onClick="onSeekFwdButtonClick"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/space_seekFwdBtn"
         app:layout_constraintRight_toLeftOf="@+id/space_skipFwdBtn"
@@ -218,7 +223,7 @@
         android:id="@+id/space_skipFwdBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/seek_fwd_button"
         app:layout_constraintRight_toLeftOf="@+id/skip_fwd_button" />
@@ -230,7 +235,7 @@
         android:layout_height="wrap_content"
         android:onClick="onSeekLongFwdButtonClick"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/sbLayout"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/space_skipFwdBtn"

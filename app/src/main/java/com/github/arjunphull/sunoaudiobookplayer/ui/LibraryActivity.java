@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.arjunphull.sunoaudiobookplayer.BuildConfig;
 import com.github.arjunphull.sunoaudiobookplayer.R;
 import com.github.arjunphull.sunoaudiobookplayer.datamodel.AudiobookDataModel;
 import com.github.arjunphull.sunoaudiobookplayer.file.Database;
@@ -135,7 +136,7 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
             case R.id.miAbout:
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.about)
-                        .setMessage("Version 1.0.0" + "\n\n" + "Copyright © 2021 Arjun Phull")
+                        .setMessage("Version " + BuildConfig.VERSION_NAME + "\n\n" + "Copyright © 2021 Arjun Phull")
                         .setNegativeButton(android.R.string.yes, null)
                         .show();
                 return true;
