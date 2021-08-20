@@ -246,25 +246,21 @@ public class PlayerActivity extends AppCompatActivity implements OnPlaybackChang
 
     public void onSeekBackButtonClick(View v) {
         mPlayerService.seek(-10000);
-        mPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24);
         updateUi();
     }
 
     public void onSeekLongBackButtonClick(View v) {
         mPlayerService.seek(-30000);
-        mPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24);
         updateUi();
     }
 
     public void onSeekFwdButtonClick(View v) {
         mPlayerService.seek(10000);
-        mPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24);
         updateUi();
     }
 
     public void onSeekLongFwdButtonClick(View v) {
         mPlayerService.seek(30000);
-        mPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24);
         updateUi();
     }
 

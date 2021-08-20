@@ -216,7 +216,9 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
     }
 
     public void seek(int value) {
-        mMediaPlayer.pause();
+        if (isPlaying() == 1) {
+            togglePlayPause();
+        }
         mDataModel.setCurrentPosition(mMediaPlayer.getCurrentPosition());
         int currentTrack = mDataModel.getCurrentTrack();
         mDataModel.seek(value);
@@ -228,7 +230,7 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
         } else {
             mMediaPlayer.seekTo(mDataModel.getCurrentPosition());
         }
-        mMediaPlayer.start();
+        togglePlayPause();
     }
 
     public void seekTo(int msec) {

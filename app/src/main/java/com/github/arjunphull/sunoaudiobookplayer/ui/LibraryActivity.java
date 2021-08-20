@@ -36,7 +36,6 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
-    private LibraryActivity activity = this;
     private FloatingActionButton mAddBooksBtn;
     private ProgressBar mBusyIndicator;
     private RecyclerView mRecyclerView;
@@ -90,7 +89,7 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
             }
         }
 
-        mAudiobooks = Database.getInstance(activity).loadAudiobooks();
+        mAudiobooks = Database.getInstance(this).loadAudiobooks();
         mRecyclerView.setAdapter(new RecyclerViewAdapter(this, this, mAudiobooks));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -169,12 +168,11 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
         menu.add(R.string.remove_from_library);
         popup.setOnMenuItemClickListener(item -> {
             if (item.getTitle().toString().equals(getString(R.string.remove_from_library))) {
-                Database database = Database.getInstance(activity);
+                Database database = Database.getInstance(this);
                 database.deleteAudiobook(audiobook.getAuthor(), audiobook.getTitle());
                 RecyclerView rvAudiobooks = findViewById(R.id.rvAudiobooks);
 
                 mAudiobooks.remove(position);
-                rvAudiobooks.removeViewAt(position);
                 rvAudiobooks.getAdapter().notifyItemRemoved(position);
                 rvAudiobooks.getAdapter().notifyItemRangeChanged(position, mAudiobooks.size());
                 return true;
@@ -209,6 +207,8 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
                     } catch (Exception e) {
                         database.deleteDatabase();
                     }
+
+                    mAudiobooks = Database.getInstance(this).loadAudiobooks();
 
                     // populate the recyclerview on the UI thread
                     runOnUiThread(() -> {
