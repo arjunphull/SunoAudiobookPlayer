@@ -87,7 +87,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         public boolean onLongClick(View v) {
-            mOnClickListener.onListItemLongClick(v, mAudiobooks.get(getAdapterPosition()));
+            mOnClickListener.onListItemLongClick(v, getAdapterPosition());
             return true;
         }
     }

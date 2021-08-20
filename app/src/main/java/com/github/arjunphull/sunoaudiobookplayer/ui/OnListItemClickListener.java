@@ -6,5 +6,5 @@ import com.github.arjunphull.sunoaudiobookplayer.datamodel.AudiobookDataModel;
 
 public interface OnListItemClickListener {
     void onListItemClick();
-    void onListItemLongClick(View v, AudiobookDataModel audiobook);
+    void onListItemLongClick(View v, int position);
 }

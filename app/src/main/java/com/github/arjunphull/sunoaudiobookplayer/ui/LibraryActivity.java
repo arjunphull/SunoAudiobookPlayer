@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -157,11 +156,13 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
     }
 
     @Override
-    public void onListItemLongClick(View v, AudiobookDataModel audiobook) {
+    public void onListItemLongClick(View v, int position) {
         long stamp = mUiLock.tryWriteLock();
         if (stamp == 0) {
             return;
         }
+
+        AudiobookDataModel audiobook = mAudiobooks.get(position);
 
         PopupMenu popup = new PopupMenu(this, v);
         Menu menu = popup.getMenu();
@@ -170,9 +171,12 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
             if (item.getTitle().toString().equals(getString(R.string.remove_from_library))) {
                 Database database = Database.getInstance(activity);
                 database.deleteAudiobook(audiobook.getAuthor(), audiobook.getTitle());
-                mAudiobooks = Database.getInstance(activity).loadAudiobooks();
                 RecyclerView rvAudiobooks = findViewById(R.id.rvAudiobooks);
-                rvAudiobooks.setAdapter(new RecyclerViewAdapter(activity, activity, mAudiobooks));
+
+                mAudiobooks.remove(position);
+                rvAudiobooks.removeViewAt(position);
+                rvAudiobooks.getAdapter().notifyItemRemoved(position);
+                rvAudiobooks.getAdapter().notifyItemRangeChanged(position, mAudiobooks.size());
                 return true;
             } else {
                 return false;
