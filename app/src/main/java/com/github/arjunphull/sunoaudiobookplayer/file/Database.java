@@ -377,6 +377,19 @@ public class Database {
     }
 
     public void updateLocation(AudiobookDataModel audiobook) throws IOException {
+        Map<String, Audiobook> bookMap = mHierarchicalData.get(audiobook.getAuthor());
+        if (bookMap == null) {
+            return;
+        }
+
+        Audiobook book = bookMap.get(audiobook.getTitle());
+        if (book == null) {
+            return;
+        }
+
+        book.setCurrentTrack(audiobook.getCurrentTrack());
+        book.setCurrentPosition(audiobook.getCurrentPosition());
+
         File authorDir = new File(mDataDir, audiobook.getAuthor());
         File bookDir = new File(authorDir, audiobook.getTitle());
         File positionFile = new File(bookDir, POSITION_FILE_NAME);

@@ -117,7 +117,19 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
         if (stamp == 0) {
             return;
         }
-        rvAudiobooks.getAdapter().notifyDataSetChanged();
+
+        AudiobookDataModel audiobook = RecyclerViewAdapter.getSelectedAudiobook();
+        if (audiobook != null) {
+            int position = 0;
+            for (int i = 0; i < mAudiobooks.size(); i++) {
+                if (audiobook == mAudiobooks.get(i)) {
+                    position = i;
+                    break;
+                }
+            }
+
+            rvAudiobooks.getAdapter().notifyItemChanged(position);
+        }
         mUiLock.unlockWrite(stamp);
     }
 
