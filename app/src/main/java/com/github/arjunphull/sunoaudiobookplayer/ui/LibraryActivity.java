@@ -210,8 +210,6 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
                         database.deleteDatabase();
                     }
 
-                    mAudiobooks = Database.getInstance(activity).loadAudiobooks();
-
                     // populate the recyclerview on the UI thread
                     runOnUiThread(() -> {
                         RecyclerView rvAudiobooks = findViewById(R.id.rvAudiobooks);
