@@ -46,7 +46,7 @@
         android:indeterminate="true"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/btnAddBooks"
-        app:layout_constraintLeft_toLeftOf="@+id/btnAddBooks"
-        app:layout_constraintRight_toRightOf="@+id/btnAddBooks"
+        app:layout_constraintStart_toStartOf="@+id/btnAddBooks"
+        app:layout_constraintEnd_toEndOf="@+id/btnAddBooks"
         app:layout_constraintTop_toTopOf="@+id/btnAddBooks" />
 </androidx.constraintlayout.widget.ConstraintLayout>

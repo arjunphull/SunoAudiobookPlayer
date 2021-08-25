@@ -126,16 +126,13 @@ public class Database {
             if (bookDir.exists()) {
                 success &= deleteFiles(bookDir.listFiles());
                 success &= bookDir.delete();
+                File authorDir = bookDir.getParentFile();
+                if (authorDir.listFiles().length == 0) {
+                    success &= authorDir.delete();
+                }
             }
         } catch (SecurityException e) {
             return false;
-        }
-
-        if (success) {
-            File authorDir = bookDir.getParentFile();
-            if (authorDir.listFiles().length == 0) {
-                authorDir.delete();
-            }
         }
 
         return success;
@@ -174,21 +171,23 @@ public class Database {
                     }
                 }
                 File authorDir = titleDir.getParentFile();
+                String author = authorDir.getName();
+                String title = titleDir.getName();
 
                 Map<String, Audiobook> bookMap;
                 Audiobook fileData;
                 synchronized (mHierarchicalData) {
-                    bookMap = mHierarchicalData.get(authorDir.getName());
+                    bookMap = mHierarchicalData.get(author);
                     if (bookMap == null) {
                         bookMap = new TreeMap<>();
-                        mHierarchicalData.put(authorDir.getName(), bookMap);
+                        mHierarchicalData.put(author, bookMap);
                     }
                 }
                 synchronized (bookMap) {
                     fileData = bookMap.get(titleDir.getName());
                     if (fileData == null) {
-                        fileData = new Audiobook();
-                        bookMap.put(titleDir.getName(), fileData);
+                        fileData = new Audiobook(author, title);
+                        bookMap.put(title, fileData);
                     }
                 }
                 // no need to synchronize fileData since threads are allocated at a directory level, not file level
@@ -341,12 +340,12 @@ public class Database {
     }
 
     public void mergeHierarchicalData(Context context, Map<String, Map<String, Audiobook>> hierarchicalData) {
+        // first merge
         for (Map.Entry<String, Map<String, Audiobook>> authorEnt : hierarchicalData.entrySet()) {
             String author = authorEnt.getKey();
             Map<String, Audiobook> bookMap = mHierarchicalData.get(author);
             if (bookMap == null) {
-                bookMap = authorEnt.getValue();
-                mHierarchicalData.put(author, bookMap);
+                mHierarchicalData.put(author, authorEnt.getValue());
                 continue;
             }
             for (Map.Entry<String, Audiobook> bookEnt : authorEnt.getValue().entrySet()) {
@@ -358,6 +357,20 @@ public class Database {
                 }
                 bookMap.put(title, bookEnt.getValue());
             }
+        }
+
+        // now validate
+        List<Audiobook> invalidAudiobooks = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Audiobook>> authorEnt : mHierarchicalData.entrySet()) {
+            for (Map.Entry<String, Audiobook> bookEnt : authorEnt.getValue().entrySet()) {
+                Audiobook audiobook = bookEnt.getValue();
+                if (!audiobook.isValid()) {
+                    invalidAudiobooks.add(audiobook);
+                }
+            }
+        }
+        for (Audiobook invalidAudiobook : invalidAudiobooks) {
+            deleteAudiobook(invalidAudiobook.getAuthor(), invalidAudiobook.getTitle());
         }
 
         saveHierarchicalData(mHierarchicalData);
@@ -384,6 +397,11 @@ public class Database {
 
         Audiobook book = bookMap.get(audiobook.getTitle());
         if (book == null) {
+            return;
+        }
+
+        boolean different = book.getCurrentTrack() != audiobook.getCurrentTrack() || book.getCurrentPosition() != audiobook.getCurrentPosition();
+        if (!different) {
             return;
         }
 

@@ -7,16 +7,22 @@ import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class Audiobook {
+    private String mAuthor;
+    private String mTitle;
     private int mCurrentTrack;
     private int mCurrentPosition;
     private File mCoverArtFile;
     private SortedSet<TrackInfo> mTracks;
+    private boolean mValid;
 
-    public Audiobook() {
+    public Audiobook(String author, String title) {
+        mAuthor = author;
+        mTitle = title;
         mCurrentTrack = 0;
         mCurrentPosition = 0;
         mCoverArtFile = null;
         mTracks = new TreeSet<>(new SortByTrackNum());
+        mValid = true;
     }
 
     public TrackInfo[] tracksToArray() {
@@ -25,12 +31,26 @@ public class Audiobook {
         return array;
     }
 
+    public String getAuthor() {
+        return mAuthor;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
     public void addTrack(TrackInfo track) {
-        mTracks.add(track);
+        if (mValid) {
+            mValid &= mTracks.add(track);
+        }
     }
 
     public TrackInfo getFirstTrack() {
         return mTracks.first();
+    }
+
+    public boolean isValid() {
+        return mValid && !mTracks.isEmpty();
     }
 
     public int getCurrentTrack() {

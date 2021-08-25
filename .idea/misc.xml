@@ -4,7 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/dev/SunoAudiobookPlayer/app/src/main/res/layout/activity_library.xml" value="0.19293478260869565" />
-        <entry key="..\:/dev/SunoAudiobookPlayer/app/src/main/res/layout/activity_player.xml" value="0.19293478260869565" />
+        <entry key="..\:/dev/SunoAudiobookPlayer/app/src/main/res/layout/activity_player.xml" value="0.1" />
+        <entry key="..\:/dev/SunoAudiobookPlayer/app/src/main/res/layout/recyclerviewitem_audiobook.xml" value="0.17346014492753623" />
         <entry key="..\:/dev/SunoAudiobookPlayer/app/src/main/res/menu/rv_popup.xml" value="0.1" />
       </map>
     </option>

@@ -167,10 +167,7 @@ public class TagParser {
                         }
 
                         for (String rawInfo : rawInfoArr) {
-                            Map<String, Audiobook> bookMap = null;
-                            Audiobook fileData = null;
                             TrackInfo trackInfo = new TrackInfo();
-
                             String preSplitInfo = rawInfo.replace("|*|", "\n");
                             String[] strings = preSplitInfo.split("\n");
                             for (String s : strings) {
@@ -184,44 +181,42 @@ public class TagParser {
                                         break;
                                     }
                                 } else if (s.startsWith("ARTIST=")) {
-                                    String author = s.substring(7);
-                                    if (!author.isEmpty()) {
-                                        bookMap = hierarchicalData.get(author);
-                                        if (bookMap == null) {
-                                            bookMap = new TreeMap<>();
-                                            hierarchicalData.put(author, bookMap);
-                                        }
-                                    }
-                                    trackInfo.setAuthor(author);
+                                    trackInfo.setAuthor(s.substring(7));
                                 } else if (s.startsWith("ALBUM=")) {
-                                    String title = s.substring(6);
-                                    if (!title.isEmpty()) {
-                                        if (bookMap != null) {
-                                            fileData = bookMap.get(title);
-                                            if (fileData == null) {
-                                                fileData = new Audiobook();
-                                                bookMap.put(title, fileData);
-                                            }
-                                        }
-                                    }
-                                    trackInfo.setTitle(title);
+                                    trackInfo.setTitle(s.substring(6));
                                 } else if (s.startsWith("TITLE=")) {
                                     trackInfo.setChapter(s.substring(6));
                                 } else if (s.startsWith("TRACK=")) {
                                     trackInfo.setTrackNum(Integer.parseInt(s.substring(6)));
                                 } else if (s.startsWith("LENGTH=")) {
                                     trackInfo.setLength(Integer.parseInt(s.substring(7)));
-                                } else if (s.equals("RECALCULATE_LENGTH")) {
-                                    trackInfo.setRecalculateLengthTrue();
                                 }
                             }
 
-                            if (trackInfo.getChapter().isEmpty() || trackInfo.getAuthor().isEmpty() || trackInfo.getTitle().isEmpty() || trackInfo.getTrackNum() <= 0) {
+                            if (trackInfo.getChapter() == null || trackInfo.getChapter().isEmpty() ||
+                                trackInfo.getAuthor() == null || trackInfo.getAuthor().isEmpty() ||
+                                trackInfo.getTitle() == null || trackInfo.getTitle().isEmpty() ||
+                                trackInfo.getTrackNum() <= 0) {
                                 guessTrackInfo(trackInfo, hierarchicalData);
-                            } else if (!trackInfo.validate(mContext)) {
-                                continue;
-                            } else {
+                            }
+
+                            Audiobook fileData = null;
+                            if (trackInfo.validate(mContext)) {
+                                Map<String, Audiobook> bookMap = hierarchicalData.get(trackInfo.getAuthor());
+                                if (bookMap == null) {
+                                    bookMap = new TreeMap<>();
+                                    hierarchicalData.put(trackInfo.getAuthor(), bookMap);
+                                }
+                                fileData = bookMap.get(trackInfo.getTitle());
+                                if (fileData == null) {
+                                    fileData = new Audiobook(trackInfo.getAuthor(), trackInfo.getTitle());
+                                    bookMap.put(fileData.getTitle(), fileData);
+                                }
                                 fileData.addTrack(trackInfo);
+                            }
+
+                            if (fileData == null || !fileData.isValid()) {
+                                break;
                             }
                         }
                     }
@@ -250,7 +245,7 @@ public class TagParser {
 
     private void guessTrackInfo(TrackInfo trackInfo, Map<String, Map<String, Audiobook>> hierarchicalData) {
         File file = new File(trackInfo.getUri().getPath());
-        if (trackInfo.getTrackNum() <= 0) {
+        if (trackInfo.getTrackNum() < 0) {
             Matcher matcher = mTrackNumPattern.matcher(file.getName());
             if (!matcher.find()) {
                 return;
@@ -267,7 +262,7 @@ public class TagParser {
             }
             trackInfo.setTrackNum(trackNum);
         }
-        if (trackInfo.getChapter().isEmpty()) {
+        if (trackInfo.getChapter() == null || trackInfo.getChapter().isEmpty()) {
             String chapter = file.getName();
             int dotIndex = chapter.indexOf(".");
             if (dotIndex != -1) {
@@ -281,29 +276,16 @@ public class TagParser {
         if (titleDir != null && titleDir != mDataDir) {
             authorDir = titleDir.getParentFile();
         }
-        String author = trackInfo.getAuthor().isEmpty() && authorDir != null ? authorDir.getName() : trackInfo.getAuthor();
-        String title = trackInfo.getTitle().isEmpty() && titleDir != null ? titleDir.getName() : trackInfo.getTitle();
-        if (author.isEmpty()) {
+        String author = (trackInfo.getAuthor() == null || trackInfo.getAuthor().isEmpty()) && authorDir != null ? authorDir.getName() : trackInfo.getAuthor();
+        String title = (trackInfo.getTitle() == null || trackInfo.getTitle().isEmpty()) && titleDir != null ? titleDir.getName() : trackInfo.getTitle();
+        if (author == null || author.isEmpty()) {
             author = mContext.getString(R.string.unknown);
         }
-        if (title.isEmpty()) {
+        if (title == null || title.isEmpty()) {
             title = mContext.getString(R.string.unknown);
         }
-
-        Map<String, Audiobook> bookMap = hierarchicalData.get(author);
-        if (bookMap == null) {
-            bookMap = new TreeMap<>();
-            hierarchicalData.put(authorDir.getName(), bookMap);
-        }
-        Audiobook fileData = bookMap.get(title);
-        if (fileData == null) {
-            fileData = new Audiobook();
-            bookMap.put(titleDir.getName(), fileData);
-        }
-
-        if (trackInfo.validate(mContext)) {
-            fileData.addTrack(trackInfo);
-        }
+        trackInfo.setAuthor(author);
+        trackInfo.setTitle(title);
     }
 
     public void parseTagsAsync(List<Triplet<ParcelFileDescriptor, Uri, DocumentFile>> fileList, Map<String, Map<String, Audiobook>> hierarchicalData) throws InterruptedException, IllegalArgumentException {

@@ -16,15 +16,10 @@ public class TrackInfo {
     private String mChapter;
     private Uri mUri;
     private DocumentFile mDir;
-    private boolean mRecalculateLength;
 
     public TrackInfo() {
         mNum = -1;
         mLength = -1;
-        mChapter = null;
-        mUri = null;
-        mDir = null;
-        mRecalculateLength = false;
     }
 
     public int getTrackNum() {
@@ -83,22 +78,21 @@ public class TrackInfo {
         mDir = df;
     }
 
-    public void setRecalculateLengthTrue() {
-        mRecalculateLength = true;
-    }
-
     public boolean validate(Context context) {
-        boolean ret = mNum != -1;
-        ret &= mLength != -1;
-        ret &= mChapter != null;
-        ret &= mTitle != null;
-        ret &= mAuthor != null;
+        boolean ret = mNum >= 0;
+        ret &= mChapter != null && !mChapter.isEmpty();
+        ret &= mTitle != null && !mTitle.isEmpty();
+        ret &= mAuthor != null && !mAuthor.isEmpty();
         ret &= mUri != null;
-        if (ret && mRecalculateLength) {
+        if (ret && mLength < 0) {
             MediaPlayer player = MediaPlayer.create(context, mUri);
+            if (player == null) {
+                return false;
+            }
             mLength = player.getDuration();
             player.release();
         }
+        ret &= mLength >= 0;
         return ret;
     }
 

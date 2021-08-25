@@ -15,8 +15,10 @@
         android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -24,8 +26,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <TextView
@@ -34,8 +38,10 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textStyle="italic"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAuthor" />
 
     <ImageView
@@ -77,8 +83,8 @@
         android:textStyle="bold"
         android:textColor="?attr/colorText"
         app:layout_constraintBottom_toTopOf="@+id/sbLayout"
-        app:layout_constraintLeft_toRightOf="@+id/skip_back_button"
-        app:layout_constraintRight_toLeftOf="@+id/skip_fwd_button"
+        app:layout_constraintStart_toEndOf="@+id/skip_back_button"
+        app:layout_constraintEnd_toStartOf="@+id/skip_fwd_button"
         tools:ignore="HardcodedText" />
 
     <ImageButton
@@ -102,8 +108,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp"
         android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/seek_long_back_button">
 
         <SeekBar
@@ -145,7 +151,7 @@
         android:scaleType="fitCenter"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/space_skipBackBtn"
+        app:layout_constraintEnd_toStartOf="@+id/space_skipBackBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_baseline_replay_30_24"
         tools:ignore="ContentDescription" />
@@ -156,8 +162,8 @@
         android:layout_height="0dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/skip_back_button"
-        app:layout_constraintRight_toLeftOf="@+id/seek_back_button" />
+        app:layout_constraintStart_toEndOf="@+id/skip_back_button"
+        app:layout_constraintEnd_toStartOf="@+id/seek_back_button" />
 
     <ImageButton
         android:id="@+id/seek_back_button"
@@ -168,8 +174,8 @@
         android:scaleType="fitCenter"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/space_skipBackBtn"
-        app:layout_constraintRight_toLeftOf="@+id/space_seekBackBtn"
+        app:layout_constraintStart_toEndOf="@+id/space_skipBackBtn"
+        app:layout_constraintEnd_toStartOf="@+id/space_seekBackBtn"
         app:srcCompat="@drawable/ic_baseline_replay_10_24"
         tools:ignore="ContentDescription" />
 
@@ -179,8 +185,8 @@
         android:layout_height="0dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/seek_back_button"
-        app:layout_constraintRight_toLeftOf="@+id/play_pause_button" />
+        app:layout_constraintStart_toEndOf="@+id/seek_back_button"
+        app:layout_constraintEnd_toStartOf="@+id/play_pause_button" />
 
     <ImageButton
         android:id="@+id/play_pause_button"
@@ -191,8 +197,8 @@
         android:scaleType="fitCenter"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/space_seekBackBtn"
-        app:layout_constraintRight_toLeftOf="@+id/space_seekFwdBtn"
+        app:layout_constraintStart_toEndOf="@+id/space_seekBackBtn"
+        app:layout_constraintEnd_toStartOf="@+id/space_seekFwdBtn"
         app:srcCompat="@drawable/ic_baseline_play_circle_outline_24"
         tools:ignore="ContentDescription" />
 
@@ -202,8 +208,8 @@
         android:layout_height="0dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/play_pause_button"
-        app:layout_constraintRight_toLeftOf="@+id/seek_fwd_button" />
+        app:layout_constraintStart_toEndOf="@+id/play_pause_button"
+        app:layout_constraintEnd_toStartOf="@+id/seek_fwd_button" />
 
     <ImageButton
         android:id="@+id/seek_fwd_button"
@@ -214,8 +220,8 @@
         android:scaleType="fitCenter"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/space_seekFwdBtn"
-        app:layout_constraintRight_toLeftOf="@+id/space_skipFwdBtn"
+        app:layout_constraintStart_toEndOf="@+id/space_seekFwdBtn"
+        app:layout_constraintEnd_toStartOf="@+id/space_skipFwdBtn"
         app:srcCompat="@drawable/ic_baseline_forward_10_24"
         tools:ignore="ContentDescription" />
 
@@ -225,8 +231,8 @@
         android:layout_height="0dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/seek_fwd_button"
-        app:layout_constraintRight_toLeftOf="@+id/skip_fwd_button" />
+        app:layout_constraintStart_toEndOf="@+id/seek_fwd_button"
+        app:layout_constraintEnd_toStartOf="@+id/skip_fwd_button" />
 
     <ImageButton
         android:id="@+id/seek_long_fwd_button"
@@ -238,7 +244,7 @@
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/space_skipFwdBtn"
+        app:layout_constraintStart_toEndOf="@+id/space_skipFwdBtn"
         app:srcCompat="@drawable/ic_baseline_forward_30_24"
         tools:ignore="ContentDescription" />
 
