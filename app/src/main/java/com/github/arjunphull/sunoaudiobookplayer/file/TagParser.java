@@ -197,7 +197,7 @@ public class TagParser {
                                 trackInfo.getAuthor() == null || trackInfo.getAuthor().isEmpty() ||
                                 trackInfo.getTitle() == null || trackInfo.getTitle().isEmpty() ||
                                 trackInfo.getTrackNum() <= 0) {
-                                guessTrackInfo(trackInfo, hierarchicalData);
+                                guessTrackInfo(trackInfo);
                             }
 
                             Audiobook fileData = null;
@@ -243,7 +243,7 @@ public class TagParser {
         }
     }
 
-    private void guessTrackInfo(TrackInfo trackInfo, Map<String, Map<String, Audiobook>> hierarchicalData) {
+    private void guessTrackInfo(TrackInfo trackInfo) {
         File file = new File(trackInfo.getUri().getPath());
         if (trackInfo.getTrackNum() < 0) {
             Matcher matcher = mTrackNumPattern.matcher(file.getName());

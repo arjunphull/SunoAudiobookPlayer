@@ -364,6 +364,7 @@ public class Database {
         for (Map.Entry<String, Map<String, Audiobook>> authorEnt : mHierarchicalData.entrySet()) {
             for (Map.Entry<String, Audiobook> bookEnt : authorEnt.getValue().entrySet()) {
                 Audiobook audiobook = bookEnt.getValue();
+                audiobook.sanitize();
                 if (!audiobook.isValid()) {
                     invalidAudiobooks.add(audiobook);
                 }

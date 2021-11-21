@@ -7,12 +7,13 @@ import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class Audiobook {
-    private String mAuthor;
-    private String mTitle;
+    private final String mAuthor;
+    private final String mTitle;
     private int mCurrentTrack;
     private int mCurrentPosition;
     private File mCoverArtFile;
     private SortedSet<TrackInfo> mTracks;
+    private boolean mMultipleDisks;
     private boolean mValid;
 
     public Audiobook(String author, String title) {
@@ -22,6 +23,7 @@ public class Audiobook {
         mCurrentPosition = 0;
         mCoverArtFile = null;
         mTracks = new TreeSet<>(new SortByTrackNum());
+        mMultipleDisks = false;
         mValid = true;
     }
 
@@ -40,13 +42,36 @@ public class Audiobook {
     }
 
     public void addTrack(TrackInfo track) {
-        if (mValid) {
-            mValid &= mTracks.add(track);
+        if (!mValid) {
+            return;
+        }
+        // if the track number exists, assume that we're dealing with multiple disks;
+        // in this case, order by the track title
+        boolean added = mTracks.add(track);
+        if (!added) {
+            if (mMultipleDisks) {
+                mValid = false;
+            } else {
+                mMultipleDisks = true;
+                SortedSet<TrackInfo> tracks = mTracks;
+                mTracks = new TreeSet<>(new SortByChapter());
+                mValid &= mTracks.addAll(tracks);
+                mValid &= mTracks.add(track);
+            }
         }
     }
 
     public TrackInfo getFirstTrack() {
         return mTracks.first();
+    }
+
+    public void sanitize() {
+        if (mMultipleDisks) {
+            int trackNum = 0;
+            for (TrackInfo t : mTracks) {
+                t.setTrackNum(++trackNum);
+            }
+        }
     }
 
     public boolean isValid() {
@@ -85,15 +110,15 @@ public class Audiobook {
         return jsonSj.toString();
     }
 
-    private class SortByTrackNum implements Comparator<TrackInfo> {
+    private static class SortByTrackNum implements Comparator<TrackInfo> {
         public int compare(TrackInfo e1, TrackInfo e2) {
-            if (e1.getTrackNum() > e2.getTrackNum()) {
-                return 1;
-            } else if (e1.getTrackNum() < e2.getTrackNum()) {
-                return -1;
-            } else {
-                return 0;
-            }
+            return Integer.compare(e1.getTrackNum(), e2.getTrackNum());
+        }
+    }
+
+    private static class SortByChapter implements Comparator<TrackInfo> {
+        public int compare(TrackInfo e1, TrackInfo e2) {
+            return e1.getChapter().compareTo(e2.getChapter());
         }
     }
 }
