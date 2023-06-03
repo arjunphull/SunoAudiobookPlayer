@@ -146,7 +146,7 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
             case R.id.miAbout:
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.about)
-                        .setMessage("Version " + BuildConfig.VERSION_NAME + "\n\n" + "Copyright © 2021 Arjun Phull")
+                        .setMessage("Version " + BuildConfig.VERSION_NAME + "\n\n" + "Copyright © 2021-2023 Arjun Phull")
                         .setNegativeButton(android.R.string.yes, null)
                         .show();
                 return true;
