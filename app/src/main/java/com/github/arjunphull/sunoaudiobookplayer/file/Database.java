@@ -260,8 +260,7 @@ public class Database {
                     ParcelFileDescriptor firstTrackPfd = context.getContentResolver().openFileDescriptor(firstTrackInfo.getUri(), "r");
                     Bitmap cover = TagParser.parseCoverArt(firstTrackPfd.getFd());
                     firstTrackPfd.close();
-                    if (cover == null) {
-                        DocumentFile[] files;
+                    if (cover == null) {DocumentFile[] files;
                         try {
                             files = firstTrackInfo.getDir().listFiles();
                         } catch (NullPointerException e) {
@@ -355,7 +354,13 @@ public class Database {
                     // if we already have this audiobook, delete it from the database
                     deleteAudiobook(author, title);
                 }
-                bookMap.put(title, bookEnt.getValue());
+                // if the book map is empty it's been deleted from the hierarchical data structure
+                if (bookMap.isEmpty()) {
+                    mHierarchicalData.put(author, authorEnt.getValue());
+                    break;
+                } else {
+                    bookMap.put(title, bookEnt.getValue());
+                }
             }
         }
 
