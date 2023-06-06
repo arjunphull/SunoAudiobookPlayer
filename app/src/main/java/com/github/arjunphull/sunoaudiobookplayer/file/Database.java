@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -150,6 +151,53 @@ public class Database {
         }
 
         return result;
+    }
+
+    public boolean updateAuthorAndTitle(String oldAuthor, String oldTitle, String newAuthor, String newTitle) {
+        boolean success = true;
+        Audiobook audiobook = null;
+        Map<String, Audiobook> bookMap = mHierarchicalData.get(oldAuthor);
+        if (bookMap != null) {
+            audiobook = bookMap.get(oldTitle);
+            bookMap.remove(oldTitle);
+            if (bookMap.isEmpty()) {
+                mHierarchicalData.remove(oldAuthor);
+            }
+        }
+
+        if (audiobook == null) {
+            return false;
+        }
+
+        File oldBookDir, oldAuthorDir, newBookDir;
+        try {
+            oldBookDir = new File(mDataDir, oldAuthor + System.getProperty("file.separator") + oldTitle);
+            newBookDir = new File(mDataDir, newAuthor + System.getProperty("file.separator") + newTitle);
+            if (oldBookDir.exists() && !newBookDir.exists()) {
+                oldAuthorDir = oldBookDir.getParentFile();
+                newBookDir.mkdirs();
+                Files.move(oldBookDir.toPath(), newBookDir.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (oldAuthorDir.listFiles().length == 0) {
+                    success &= oldAuthorDir.delete();
+                }
+            } else {
+                success = false;
+            }
+        } catch (SecurityException | IOException e) {
+            return false;
+        }
+
+        if (success) {
+            audiobook.updateAuthorAndTitle(newAuthor, newTitle);
+            bookMap = mHierarchicalData.get(newAuthor);
+            if (bookMap == null) {
+                bookMap = new TreeMap<>();
+                mHierarchicalData.put(newAuthor, bookMap);
+            }
+            bookMap.put(newTitle, audiobook);
+        }
+
+        return success;
     }
 
     private void loadHierarchicalData(Context context, File[] files, Set<File> deleteSet, ExecutorService executor, List<Future<?>> executorJobs) {
@@ -352,7 +400,9 @@ public class Database {
                 Audiobook fileData = bookMap.get(title);
                 if (fileData != null) {
                     // if we already have this audiobook, delete it from the database
-                    deleteAudiobook(author, title);
+                    //deleteAudiobook(author, title);
+                    // actually let's leave it alone
+                    continue;
                 }
                 // if the book map is empty it's been deleted from the hierarchical data structure
                 if (bookMap.isEmpty()) {

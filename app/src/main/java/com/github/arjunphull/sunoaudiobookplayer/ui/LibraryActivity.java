@@ -6,9 +6,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.locks.StampedLock;
 
 public class LibraryActivity extends AppCompatActivity implements OnListItemClickListener {
@@ -177,13 +180,57 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
 
         PopupMenu popup = new PopupMenu(this, v);
         Menu menu = popup.getMenu();
+        menu.add(R.string.edit_details);
         menu.add(R.string.remove_from_library);
         popup.setOnMenuItemClickListener(item -> {
-            if (item.getTitle().toString().equals(getString(R.string.remove_from_library))) {
+            if (Objects.equals(item.getTitle().toString(), getResources().getString(R.string.edit_details))) {
+                Database database = Database.getInstance(this);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                // Get the layout inflater
+                LayoutInflater inflater = this.getLayoutInflater();
+                // Inflate and set the layout for the dialog
+                // Pass null as the parent view because its going in the dialog layout
+                builder.setView(inflater.inflate(R.layout.edit_details, null));
+                AlertDialog editDetailsDialog = builder.create();
+                editDetailsDialog.show();
+                ((EditText) editDetailsDialog.findViewById(R.id.etAuthor)).setText(audiobook.getAuthor());
+                ((EditText) editDetailsDialog.findViewById(R.id.etTitle)).setText(audiobook.getTitle());
+                editDetailsDialog.findViewById(R.id.bOk).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new Thread(() -> {
+                            boolean updated = database.updateAuthorAndTitle(
+                                    audiobook.getAuthor(),
+                                    audiobook.getTitle(),
+                                    ((EditText) editDetailsDialog.findViewById(R.id.etAuthor)).getText().toString().trim(),
+                                    ((EditText) editDetailsDialog.findViewById(R.id.etTitle)).getText().toString().trim()
+                            );
+                            // update the recyclerview on the UI thread
+                            runOnUiThread(() -> {
+                                if (updated) {
+                                    audiobook.updateAuthorAndTitle(
+                                        ((EditText) editDetailsDialog.findViewById(R.id.etAuthor)).getText().toString().trim(),
+                                        ((EditText) editDetailsDialog.findViewById(R.id.etTitle)).getText().toString().trim()
+                                    );
+                                    ((RecyclerView) findViewById(R.id.rvAudiobooks)).getAdapter().notifyItemChanged(position);
+                                }
+                                editDetailsDialog.cancel();
+                            });
+                        }).start();
+                    }
+                });
+                editDetailsDialog.findViewById(R.id.bCancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDetailsDialog.cancel();
+                    }
+                });
+                return true;
+            } else if (Objects.equals(item.getTitle().toString(), getResources().getString(R.string.remove_from_library))) {
                 Database database = Database.getInstance(this);
                 database.deleteAudiobook(audiobook.getAuthor(), audiobook.getTitle());
                 RecyclerView rvAudiobooks = findViewById(R.id.rvAudiobooks);
-
                 mAudiobooks.remove(position);
                 rvAudiobooks.getAdapter().notifyItemRemoved(position);
                 rvAudiobooks.getAdapter().notifyItemRangeChanged(position, mAudiobooks.size());

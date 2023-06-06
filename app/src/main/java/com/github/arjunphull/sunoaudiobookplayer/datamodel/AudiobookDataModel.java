@@ -3,18 +3,19 @@ package com.github.arjunphull.sunoaudiobookplayer.datamodel;
 import android.net.Uri;
 
 import com.github.arjunphull.sunoaudiobookplayer.file.Audiobook;
+import com.github.arjunphull.sunoaudiobookplayer.file.Database;
 import com.github.arjunphull.sunoaudiobookplayer.file.TrackInfo;
 
 import java.io.File;
 
 public class AudiobookDataModel {
-    private final String mTitle;
-    private final String mAuthor;
+    private String mTitle;
+    private String mAuthor;
     private final int mLength;
     private TrackInfo[] mTrackInfoArray;
     private int mCurrentTrackNum;
     private int mCurrentPositionMs;
-    private String mCoverArtPath;
+    private File mCoverArtFile;
     private ElapsedTime mElapsedTime;
 
     private AudiobookDataModel(String title, String author, TrackInfo[] trackInfoArray, int currentTrackNum, int currentPosition, String coverArtPath) {
@@ -23,7 +24,7 @@ public class AudiobookDataModel {
         mTrackInfoArray = trackInfoArray;
         mCurrentTrackNum = currentTrackNum;
         mCurrentPositionMs = currentPosition;
-        mCoverArtPath = coverArtPath;
+        mCoverArtFile = coverArtPath == null ? null : new File(coverArtPath);
         mElapsedTime = new ElapsedTime();
         int length = 0;
         for (TrackInfo t : trackInfoArray) {
@@ -40,6 +41,14 @@ public class AudiobookDataModel {
         }
 
         return new AudiobookDataModel(title, author, fileData.tracksToArray(), fileData.getCurrentTrack(), fileData.getCurrentPosition(), coverArtFilePath);
+    }
+
+    public void updateAuthorAndTitle(String author, String title) {
+        mAuthor = author;
+        mTitle = title;
+        if (mCoverArtFile != null) {
+            mCoverArtFile = new File(Database.getInstance(null).getDataDir(), author + System.getProperty("file.separator") + title + System.getProperty("file.separator") + mCoverArtFile.getName());
+        }
     }
 
     protected TrackInfo[] getTrackInfoArray() {
@@ -137,7 +146,7 @@ public class AudiobookDataModel {
     }
 
     public String getCoverArtPath() {
-        return mCoverArtPath;
+        return mCoverArtFile == null ? null : mCoverArtFile.getPath();
     }
 
     public int getCurrentTrack() {

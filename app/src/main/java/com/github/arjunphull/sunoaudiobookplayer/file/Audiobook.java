@@ -7,8 +7,8 @@ import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class Audiobook {
-    private final String mAuthor;
-    private final String mTitle;
+    private String mAuthor;
+    private String mTitle;
     private int mCurrentTrack;
     private int mCurrentPosition;
     private File mCoverArtFile;
@@ -25,6 +25,14 @@ public class Audiobook {
         mTracks = new TreeSet<>(new SortByTrackNum());
         mMultipleDisks = false;
         mValid = true;
+    }
+
+    public void updateAuthorAndTitle(String author, String title) {
+        mAuthor = author;
+        mTitle = title;
+        if (mCoverArtFile != null) {
+            mCoverArtFile = new File(Database.getInstance(null).getDataDir(), author + System.getProperty("file.separator") + title + System.getProperty("file.separator") + mCoverArtFile.getName());
+        }
     }
 
     public TrackInfo[] tracksToArray() {
