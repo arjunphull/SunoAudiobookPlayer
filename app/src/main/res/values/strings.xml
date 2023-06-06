@@ -6,7 +6,7 @@
     <string name="chooseDirectory">Choose directory</string>
     <string name="unknown">unknown</string>
     <string name="remove_from_library">remove from library</string>
-    <string name="edit_details">edit details</string>
+    <string name="edit_author_title">edit author and title</string>
     <string name="about">About</string>
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>

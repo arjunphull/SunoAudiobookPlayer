@@ -180,12 +180,11 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
 
         PopupMenu popup = new PopupMenu(this, v);
         Menu menu = popup.getMenu();
-        menu.add(R.string.edit_details);
+        menu.add(R.string.edit_author_title);
         menu.add(R.string.remove_from_library);
         popup.setOnMenuItemClickListener(item -> {
-            if (Objects.equals(item.getTitle().toString(), getResources().getString(R.string.edit_details))) {
+            if (Objects.equals(item.getTitle().toString(), getResources().getString(R.string.edit_author_title))) {
                 Database database = Database.getInstance(this);
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 // Get the layout inflater
                 LayoutInflater inflater = this.getLayoutInflater();
@@ -200,19 +199,20 @@ public class LibraryActivity extends AppCompatActivity implements OnListItemClic
                     @Override
                     public void onClick(View v) {
                         new Thread(() -> {
+                            String newAuthor = ((EditText) editDetailsDialog.findViewById(R.id.etAuthor)).getText().toString().trim();
+                            String newTitle = ((EditText) editDetailsDialog.findViewById(R.id.etTitle)).getText().toString().trim();
                             boolean updated = database.updateAuthorAndTitle(
                                     audiobook.getAuthor(),
                                     audiobook.getTitle(),
-                                    ((EditText) editDetailsDialog.findViewById(R.id.etAuthor)).getText().toString().trim(),
-                                    ((EditText) editDetailsDialog.findViewById(R.id.etTitle)).getText().toString().trim()
+                                    newAuthor,
+                                    newTitle
                             );
+                            if (updated) {
+                                audiobook.updateAuthorAndTitle(newAuthor, newTitle);
+                            }
                             // update the recyclerview on the UI thread
                             runOnUiThread(() -> {
                                 if (updated) {
-                                    audiobook.updateAuthorAndTitle(
-                                        ((EditText) editDetailsDialog.findViewById(R.id.etAuthor)).getText().toString().trim(),
-                                        ((EditText) editDetailsDialog.findViewById(R.id.etTitle)).getText().toString().trim()
-                                    );
                                     ((RecyclerView) findViewById(R.id.rvAudiobooks)).getAdapter().notifyItemChanged(position);
                                 }
                                 editDetailsDialog.cancel();
