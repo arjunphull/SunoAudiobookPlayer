@@ -12,11 +12,11 @@ public class AudiobookDataModel {
     private String mTitle;
     private String mAuthor;
     private final int mLength;
-    private TrackInfo[] mTrackInfoArray;
+    private final TrackInfo[] mTrackInfoArray;
     private int mCurrentTrackNum;
     private int mCurrentPositionMs;
     private File mCoverArtFile;
-    private ElapsedTime mElapsedTime;
+    private final ElapsedTime mElapsedTime;
 
     private AudiobookDataModel(String title, String author, TrackInfo[] trackInfoArray, int currentTrackNum, int currentPosition, String coverArtPath) {
         mTitle = title;
