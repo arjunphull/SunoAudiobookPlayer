@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.arjunphull.sunoaudiobookplayer.R;
@@ -154,16 +155,18 @@ public class PlayerActivity extends AppCompatActivity implements OnPlaybackChang
             }
         };
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                shutdown();
+                finish();
+            }
+        });
+
         // start foreground service
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
         startForegroundService(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        shutdown();
-        finish();
     }
 
     @Override

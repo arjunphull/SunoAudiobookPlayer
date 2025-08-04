@@ -14,6 +14,8 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.github.arjunphull.sunoaudiobookplayer.R;
 import com.github.arjunphull.sunoaudiobookplayer.datamodel.AudiobookDataModel;
@@ -41,8 +43,9 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
 
     private OnPlaybackChangeListener mPlaybackChangeListener;
     private MediaPlayer mMediaPlayer;
-    private long mPauseTime;
+    private MediaSessionCompat mMediaSession;
     private AudioManager mAudioManager;
+    private long mPauseTime;
     private boolean mPlaybackDelayed;
     private boolean mPlaybackAuthorized;
     private boolean mResumeOnFocusGain;
@@ -56,6 +59,19 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
         mPlaybackDelayed = false;
         mPlaybackAuthorized = false;
         mResumeOnFocusGain = false;
+
+        mMediaSession = new MediaSessionCompat(this, "MediaPlaybackService");
+        mMediaSession.setCallback(new MediaSessionCallback());
+        mMediaSession.setPlaybackState(
+                new PlaybackStateCompat.Builder()
+                        .setActions(
+                                PlaybackStateCompat.ACTION_PLAY |
+                                        PlaybackStateCompat.ACTION_PAUSE |
+                                        PlaybackStateCompat.ACTION_STOP
+                        )
+                        .setState(PlaybackStateCompat.STATE_STOPPED, 0, 1.0f)
+                        .build()
+        );
 
         // initializing variables for audio focus and playback management
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -289,6 +305,47 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
                     togglePlayPause();
                 }
                 break;
+        }
+    }
+
+
+    private class MediaSessionCallback extends MediaSessionCompat.Callback {
+
+        @Override
+        public void onPlay() {
+            togglePlayPause();
+        }
+
+        @Override
+        public void onPause() {
+            togglePlayPause();
+        }
+
+        @Override
+        public void onStop() {
+            if (isPlaying() > 0) {
+                togglePlayPause();
+            }
+        }
+
+        @Override
+        public void onFastForward() {
+            seek(10000);
+        }
+
+        @Override
+        public void onRewind() {
+            seek(-10000);
+        }
+
+        @Override
+        public void onSkipToNext() {
+            seek(30000);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            seek(-30000);
         }
     }
 }
