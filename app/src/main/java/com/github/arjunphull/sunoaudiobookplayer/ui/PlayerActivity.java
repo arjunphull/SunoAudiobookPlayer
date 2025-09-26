@@ -80,8 +80,9 @@ public class PlayerActivity extends AppCompatActivity implements OnPlaybackChang
 
     private void updateUi() {
         if (!mExecutor.isTerminated()) {
-            mDataModel.setCurrentPosition(mPlayerService.getCurrentPosition());
-            mSeekBar.setProgress((int) (mSeekBar.getMax() * (mPlayerService.getCurrentPosition() / (float) mDataModel.getCurrentTrackLength())));
+            int currentPosition = mPlayerService.getCurrentPosition();
+            mDataModel.setCurrentPosition(currentPosition);
+            mSeekBar.setProgress((int) (mSeekBar.getMax() * (currentPosition / (float) mDataModel.getCurrentTrackLength())));
             mChapterTv.setText(mDataModel.getNumChapters() == 1 ? "" : mDataModel.getChapter());
             mPositionTv.setText(mDataModel.getCurrentTrackPositionFormatted());
             mLengthTv.setText(mDataModel.getCurrentTrackLengthFormatted());
@@ -112,7 +113,9 @@ public class PlayerActivity extends AppCompatActivity implements OnPlaybackChang
         mUiHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                updateUi();
+                if (mPlayerService.isPlaying() > 0) {
+                    updateUi();
+                }
             }
         };
 

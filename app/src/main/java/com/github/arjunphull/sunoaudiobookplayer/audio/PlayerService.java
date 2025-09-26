@@ -169,6 +169,8 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
                 } else {
                     rewind = 500;
                 }
+
+                mPauseTime = -1;
             }
 
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - rewind);
