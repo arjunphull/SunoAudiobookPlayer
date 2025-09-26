@@ -55,48 +55,7 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mPlaybackDelayed = false;
-        mPlaybackAuthorized = false;
-        mResumeOnFocusGain = false;
-
-        mMediaSession = new MediaSessionCompat(this, "MediaPlaybackService");
-        mMediaSession.setCallback(new MediaSessionCallback());
-        mMediaSession.setPlaybackState(
-                new PlaybackStateCompat.Builder()
-                        .setActions(
-                                PlaybackStateCompat.ACTION_PLAY |
-                                        PlaybackStateCompat.ACTION_PAUSE |
-                                        PlaybackStateCompat.ACTION_STOP
-                        )
-                        .setState(PlaybackStateCompat.STATE_STOPPED, 0, 1.0f)
-                        .build()
-        );
-
-        // initializing variables for audio focus and playback management
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        AudioAttributes playbackAttributes = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build();
-        AudioFocusRequest focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                .setAudioAttributes(playbackAttributes)
-                .setAcceptsDelayedFocusGain(true)
-                .setOnAudioFocusChangeListener(this)
-                .setWillPauseWhenDucked(true)
-                .build();
-
-        // requesting audio focus and processing the response
-        int res = mAudioManager.requestAudioFocus(focusRequest);
-        if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
-            mPlaybackAuthorized = false;
-        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            mPlaybackAuthorized = true;
-        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_DELAYED) {
-            mPlaybackDelayed = true;
-            mPlaybackAuthorized = false;
-        }
-
+        preInit();
         initMediaPlayer();
     }
 
@@ -255,6 +214,49 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
         mMediaPlayer.seekTo(msec);
     }
 
+    private void preInit() {
+        mPlaybackDelayed = false;
+        mPlaybackAuthorized = false;
+        mResumeOnFocusGain = false;
+
+        mMediaSession = new MediaSessionCompat(this, "MediaPlaybackService");
+        mMediaSession.setCallback(new MediaSessionCallback());
+        mMediaSession.setPlaybackState(
+                new PlaybackStateCompat.Builder()
+                        .setActions(
+                                PlaybackStateCompat.ACTION_PLAY |
+                                        PlaybackStateCompat.ACTION_PAUSE |
+                                        PlaybackStateCompat.ACTION_STOP
+                        )
+                        .setState(PlaybackStateCompat.STATE_STOPPED, 0, 1.0f)
+                        .build()
+        );
+
+        // initializing variables for audio focus and playback management
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        AudioAttributes playbackAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        AudioFocusRequest focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttributes)
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(this)
+                .setWillPauseWhenDucked(true)
+                .build();
+
+        // requesting audio focus and processing the response
+        int res = mAudioManager.requestAudioFocus(focusRequest);
+        if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+            mPlaybackAuthorized = false;
+        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            mPlaybackAuthorized = true;
+        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_DELAYED) {
+            mPlaybackDelayed = true;
+            mPlaybackAuthorized = false;
+        }
+    }
+
     private void initMediaPlayer() {
         mPauseTime = -1;
         mMediaPlayer = MediaPlayer.create(this, mDataModel.getCurrentTrackUri());
@@ -315,6 +317,9 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
 
         @Override
         public void onPlay() {
+            preInit();
+            mMediaPlayer.release();
+            initMediaPlayer();
             togglePlayPause();
         }
 
