@@ -43,7 +43,13 @@ public class TrackInfo {
     }
 
     public void setAuthor(String author) {
-        mAuthor = author;
+        // handle author/narrator cases.
+        int slashIndex = author.indexOf('/');
+        if (slashIndex >= 0) {
+            mAuthor = author.substring(0, slashIndex);
+        } else {
+            mAuthor = author;
+        }
     }
 
     public String getTitle() {
